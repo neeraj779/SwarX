@@ -1,0 +1,41 @@
+{
+  "name": "swarx",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "service",
+    "ui"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=service\" \"npm run dev --workspace=ui\"",
+    "lint-staged": "lint-staged",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "concurrently": "^9.1.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0"
+  },
+  "lint-staged": {
+    "ui/**/*.{js,jsx,ts,tsx}": [
+      "npm run lint --workspace=ui",
+      "npm run format --workspace=ui"
+    ],
+    "service/**/*.{js,ts}": [
+      "npm run lint --workspace=service",
+      "npm run format --workspace=service"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neeraj779/SwarX.git"
+  },
+  "author": "Neeraj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/neeraj779/SwarX/issues"
+  },
+  "homepage": "https://github.com/neeraj779/SwarX#readme"
+}
