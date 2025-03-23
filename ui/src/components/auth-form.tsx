@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 import { FormField } from './form-field';
 import { PasswordInput } from './password-input';
 import { SocialAuthButtons } from './social-auth-buttons';
@@ -14,11 +16,10 @@ import SiteCredits from './site-credits.tsx';
 export const AuthForm = memo(({ mode = AUTH_MODES.LOGIN }: AuthFormProps) => {
   const {
     form: { register },
-    error,
+    authError,
     errors,
     isSubmitting,
-    handleSubmit,
-    resetError
+    handleSubmit
   } = useAuthForm({ mode });
 
   const labels = mode === AUTH_MODES.LOGIN ? AUTH_LABELS.LOGIN : AUTH_LABELS.SIGNUP;
@@ -33,17 +34,16 @@ export const AuthForm = memo(({ mode = AUTH_MODES.LOGIN }: AuthFormProps) => {
           <CardDescription className="text-muted-foreground/80">
             {labels.DESCRIPTION}
           </CardDescription>
-          {error?.message && (
-            <p
-              className="mt-2 text-sm font-medium text-red-500/90 py-2 px-3 rounded-lg"
-              role="alert"
-            >
-              {error.message}
-            </p>
+          {authError?.message && (
+            <Alert variant="destructive" className="text-left">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{authError.message}</AlertDescription>
+            </Alert>
           )}
         </CardHeader>
         <CardContent className="pb-4">
-          <form onSubmit={handleSubmit} className="space-y-4" onChange={resetError}>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4">
               <div className="grid gap-3">
                 {mode === AUTH_MODES.SIGNUP && (

@@ -3,6 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Fallback } from './components/fallback';
 import AppRoutes from '@/routes/app.routes';
 import { RootLayout } from './layout/root-layout';
+import { Toaster } from '@/components/ui/sonner';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <AppRoutes />
         </RootLayout>
       </BrowserRouter>
+      <Toaster />
     </ErrorBoundary>
   );
 }
