@@ -1,44 +1,19 @@
-import { ArtistService } from '@/modules/artist/artist.service';
 import { asyncHandler } from '@/middleware/error.middleware';
 import {
 	ArtistByIdOrLinkInput,
 	ArtistIdParamsInput,
 	ArtistPaginatedQueryInput,
-	artistByIdOrLinkSchema,
-	artistIdParamsSchema,
-	artistPaginatedQuerySchema,
 } from './schemas/artist-input.schema';
+import { artistService } from './artist.service';
 
 export class ArtistController {
-	private artistService: ArtistService;
-
-	constructor() {
-		this.artistService = new ArtistService();
-	}
-
 	public getArtistByIdOrLink = asyncHandler<{
 		query: ArtistByIdOrLinkInput;
 	}>(async (req, res): Promise<void> => {
-		const {
-			link,
-			id,
-			page = 0,
-			sortBy = 'popularity',
-			sortOrder = 'asc',
-			songCount = 10,
-			albumCount = 10,
-		} = artistByIdOrLinkSchema.parse(req.query);
-
-		if (!id && !link) {
-			res.status(400).json({
-				success: false,
-				message: 'Either artist ID or link is required',
-			});
-			return;
-		}
+		const { link, id, page, sortBy, sortOrder, songCount, albumCount } = req.query;
 
 		const response = link
-			? await this.artistService.getArtistByLink({
+			? await artistService.getArtistByLink({
 					token: link,
 					page,
 					songCount,
@@ -46,7 +21,7 @@ export class ArtistController {
 					sortBy,
 					sortOrder,
 				})
-			: await this.artistService.getArtistById({
+			: await artistService.getArtistById({
 					artistId: id!,
 					page,
 					songCount,
@@ -62,18 +37,16 @@ export class ArtistController {
 		params: ArtistIdParamsInput;
 		query: ArtistByIdOrLinkInput;
 	}>(async (req, res): Promise<void> => {
-		const { id } = artistIdParamsSchema.parse(req.params);
-		const { page, songCount, albumCount, sortBy, sortOrder } = artistByIdOrLinkSchema.parse(
-			req.query,
-		);
+		const { id } = req.params;
+		const { page, songCount, albumCount, sortBy, sortOrder } = req.query;
 
-		const response = await this.artistService.getArtistById({
+		const response = await artistService.getArtistById({
 			artistId: id,
-			page: page || 0,
-			songCount: songCount || 10,
-			albumCount: albumCount || 10,
-			sortBy: sortBy || 'popularity',
-			sortOrder: sortOrder || 'asc',
+			page,
+			songCount,
+			albumCount,
+			sortBy,
+			sortOrder,
 		});
 
 		res.json({ success: true, data: response });
@@ -83,14 +56,14 @@ export class ArtistController {
 		params: ArtistIdParamsInput;
 		query: ArtistPaginatedQueryInput;
 	}>(async (req, res): Promise<void> => {
-		const { id } = artistIdParamsSchema.parse(req.params);
-		const { page, sortBy, sortOrder } = artistPaginatedQuerySchema.parse(req.query);
+		const { id } = req.params;
+		const { page, sortBy, sortOrder } = req.query;
 
-		const response = await this.artistService.getArtistSongs({
+		const response = await artistService.getArtistSongs({
 			artistId: id,
-			page: page || 0,
-			sortBy: sortBy || 'popularity',
-			sortOrder: sortOrder || 'desc',
+			page,
+			sortBy,
+			sortOrder,
 		});
 
 		res.json({ success: true, data: response });
@@ -100,14 +73,14 @@ export class ArtistController {
 		params: ArtistIdParamsInput;
 		query: ArtistPaginatedQueryInput;
 	}>(async (req, res): Promise<void> => {
-		const { id } = artistIdParamsSchema.parse(req.params);
-		const { page, sortBy, sortOrder } = artistPaginatedQuerySchema.parse(req.query);
+		const { id } = req.params;
+		const { page, sortBy, sortOrder } = req.query;
 
-		const response = await this.artistService.getArtistAlbums({
+		const response = await artistService.getArtistAlbums({
 			artistId: id,
-			page: page || 0,
-			sortBy: sortBy || 'popularity',
-			sortOrder: sortOrder || 'desc',
+			page,
+			sortBy,
+			sortOrder,
 		});
 
 		res.json({ success: true, data: response });

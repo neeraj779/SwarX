@@ -50,3 +50,6 @@ export const songSearchPlaylistSchema = z.object({
 		}),
 	),
 });
+
+export type SongSearchPlaylistAPIResponse = z.infer<typeof songSearchPlaylistAPIResponseSchema>;
+export type SongSearchPlaylist = z.infer<typeof songSearchPlaylistSchema>;

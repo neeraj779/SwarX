@@ -1,29 +1,23 @@
 import type { GetSongById, GetSongSuggestions } from './types/song.types';
 import { useFetch } from '@/shared/utils/fetch.util';
 import { Endpoints } from '@/shared/constants/endpoint.constant';
-import {
-	lyricsAPIResponseSchema,
-	lyricsSchema,
-	songAPIResponseSchema,
-	songSchema,
-	songSuggestionAPIResponseSchema,
-} from './schemas';
-import { z } from 'zod';
+import { ErrorMessages } from '@/shared/constants/error.constant';
+import { AppError } from '@/shared/types/error.types';
 import { songLyricsResponseDto, songResponseDto } from './dto/song.dto';
+import { Song, SongAPIResponse } from './schemas/song.schema';
+import { Lyrics, LyricsAPIResponse } from './schemas/song-lyrics.schema';
+import { SongSuggestionAPIResponse } from './schemas/song-suggestion.schema';
 
 export class SongService {
-	async getSongByIds({
-		songIds,
-		includeLyrics = false,
-	}: GetSongById): Promise<z.infer<typeof songSchema>[]> {
-		const { data } = await useFetch<{ songs: z.infer<typeof songAPIResponseSchema>[] }>({
+	async getSongByIds({ songIds, includeLyrics = false }: GetSongById): Promise<Song[]> {
+		const { data } = await useFetch<{ songs: SongAPIResponse[] }>({
 			endpoint: Endpoints.songs.id,
 			params: {
 				pids: songIds,
 			},
 		});
 
-		if (!data.songs?.length) throw new Error('No songs found');
+		if (!data.songs?.length) throw AppError.NotFound(ErrorMessages.Song.NOT_FOUND);
 
 		const songs = data.songs.map(song => songResponseDto(song));
 
@@ -38,8 +32,8 @@ export class SongService {
 		return songs;
 	}
 
-	async getSongByLink(token: string): Promise<z.infer<typeof songSchema>[]> {
-		const { data } = await useFetch<{ songs: z.infer<typeof songAPIResponseSchema>[] }>({
+	async getSongByLink(token: string): Promise<Song[]> {
+		const { data } = await useFetch<{ songs: SongAPIResponse[] }>({
 			endpoint: Endpoints.songs.link,
 			params: {
 				token,
@@ -47,31 +41,28 @@ export class SongService {
 			},
 		});
 
-		if (!data.songs?.length) throw new Error('No songs found');
+		if (!data.songs?.length) throw AppError.NotFound(ErrorMessages.Song.NOT_FOUND);
 
 		return data.songs.map(song => songResponseDto(song));
 	}
 
-	async getSongLyrics(songId: string): Promise<z.infer<typeof lyricsSchema>> {
-		const { data } = await useFetch<z.infer<typeof lyricsAPIResponseSchema>>({
+	async getSongLyrics(songId: string): Promise<Lyrics> {
+		const { data } = await useFetch<LyricsAPIResponse>({
 			endpoint: Endpoints.songs.lyrics,
 			params: {
 				lyrics_id: songId,
 			},
 		});
 
-		if (!data.lyrics) throw new Error('No lyrics found');
+		if (!data.lyrics) throw AppError.NotFound(ErrorMessages.Song.LYRICS_NOT_FOUND);
 
 		return songLyricsResponseDto(data);
 	}
 
-	async getSongSuggestions({
-		songId,
-		limit = 10,
-	}: GetSongSuggestions): Promise<z.infer<typeof songSchema>[]> {
+	async getSongSuggestions({ songId, limit = '10' }: GetSongSuggestions): Promise<Song[]> {
 		const stationId = await this.createSongStation(songId);
 
-		const { data, ok } = await useFetch<z.infer<typeof songSuggestionAPIResponseSchema>>({
+		const { data, ok } = await useFetch<SongSuggestionAPIResponse>({
 			endpoint: Endpoints.songs.suggestions,
 			params: {
 				stationid: stationId,
@@ -81,7 +72,7 @@ export class SongService {
 		});
 
 		if (!data || !ok) {
-			throw new Error('No suggestions found');
+			throw AppError.NotFound(ErrorMessages.Song.SUGGESTIONS_NOT_FOUND);
 		}
 
 		const { stationid: _stationid, ...suggestions } = data;
@@ -90,7 +81,7 @@ export class SongService {
 			Object.values(suggestions)
 				.map(element => element && songResponseDto(element.song))
 				.filter(Boolean)
-				.slice(0, limit) || []
+				.slice(0, parseInt(limit)) || []
 		);
 	}
 
@@ -106,8 +97,11 @@ export class SongService {
 			context: 'android',
 		});
 
-		if (!data || !ok || !data.stationid) throw new Error('Failed to create song station');
+		if (!data || !ok || !data.stationid)
+			throw AppError.InternalError(ErrorMessages.Song.STATION_CREATION_FAILED);
 
 		return data.stationid;
 	}
 }
+
+export const songService = new SongService();

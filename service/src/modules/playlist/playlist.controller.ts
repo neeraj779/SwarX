@@ -1,37 +1,23 @@
 import { asyncHandler } from '@/middleware/error.middleware';
-import { PlaylistByIdOrLinkInput, playlistByIdOrLinkSchema } from './schemas/playlist.schema';
-import { PlaylistService } from './playlist.service';
+import { PlaylistByIdOrLinkInput } from './schemas/playlist.schema';
+import { playlistService } from './playlist.service';
 
 export class PlaylistController {
-	private playlistService: PlaylistService;
-
-	constructor() {
-		this.playlistService = new PlaylistService();
-	}
-
 	public getPlaylistByIdOrLink = asyncHandler<{
 		query: PlaylistByIdOrLinkInput;
 	}>(async (req, res): Promise<void> => {
-		const { id, link, page, limit } = playlistByIdOrLinkSchema.parse(req.query);
-
-		if (!id && !link) {
-			res.status(400).json({
-				success: false,
-				message: 'Either playlist ID or link is required',
-			});
-			return;
-		}
+		const { id, link, page, limit } = req.query;
 
 		const response = link
-			? await this.playlistService.getPlaylistByLink({
+			? await playlistService.getPlaylistByLink({
 					token: link,
-					page: page || 0,
-					limit: limit || 10,
+					page,
+					limit,
 				})
-			: await this.playlistService.getPlaylistById({
+			: await playlistService.getPlaylistById({
 					id: id!,
-					page: page || 0,
-					limit: limit || 10,
+					page,
+					limit,
 				});
 
 		res.json({ success: true, data: response });

@@ -180,3 +180,6 @@ export const artistSchema = z.object({
 		)
 		.nullable(),
 });
+
+export type ArtistAPIResponse = z.infer<typeof artistAPIResponseSchema>;
+export type Artist = z.infer<typeof artistSchema>;

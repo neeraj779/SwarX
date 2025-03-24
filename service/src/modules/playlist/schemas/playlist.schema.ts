@@ -3,24 +3,27 @@ import { artistMapSchema } from '@/modules/artist/schemas/artist-map.schema';
 import { songAPIResponseSchema, songSchema } from '@/modules/song/schemas/song.schema';
 import { z } from 'zod';
 
-export const playlistByIdOrLinkSchema = z.object({
-	id: z.string().optional(),
-	link: z
-		.string()
-		.url()
-		.optional()
-		.transform(value => {
-			const matches = value?.match(
-				/(?:jiosaavn\.com|saavn\.com)\/(?:featured|s\/playlist)\/[^/]+\/([^/]+)$|\/([^/]+)$/,
-			);
-			const filteredMatches = matches?.filter(each => each !== undefined);
-			return (filteredMatches && filteredMatches[filteredMatches?.length - 1 || 0]) || undefined;
-		}),
-	page: z.string().pipe(z.coerce.number()).optional(),
-	limit: z.string().pipe(z.coerce.number()).optional(),
-});
-
-export type PlaylistByIdOrLinkInput = z.infer<typeof playlistByIdOrLinkSchema>;
+export const playlistByIdOrLinkSchema = z
+	.object({
+		id: z.string().optional(),
+		link: z
+			.string()
+			.url()
+			.optional()
+			.transform(value => {
+				const matches = value?.match(
+					/(?:jiosaavn\.com|saavn\.com)\/(?:featured|s\/playlist)\/[^/]+\/([^/]+)$|\/([^/]+)$/,
+				);
+				const filteredMatches = matches?.filter(each => each !== undefined);
+				return (filteredMatches && filteredMatches[filteredMatches?.length - 1 || 0]) || undefined;
+			}),
+		page: z.string().optional(),
+		limit: z.string().optional(),
+	})
+	.refine(data => data.id || data.link, {
+		message: 'Either playlist ID or link is required',
+		path: ['id'],
+	});
 
 export const playlistAPIResponseSchema = z
 	.object({
@@ -88,3 +91,7 @@ export const playlistSchema = z.object({
 	songs: z.array(songSchema).nullable(),
 	artists: z.array(artistMapSchema).nullable(),
 });
+
+export type PlaylistByIdOrLinkInput = z.infer<typeof playlistByIdOrLinkSchema>;
+export type PlaylistAPIResponse = z.infer<typeof playlistAPIResponseSchema>;
+export type Playlist = z.infer<typeof playlistSchema>;

@@ -35,3 +35,6 @@ export const searchArtistSchema = z.object({
 		}),
 	),
 });
+
+export type SearchArtistAPIResponse = z.infer<typeof searchArtistAPIResponseSchema>;
+export type SearchArtist = z.infer<typeof searchArtistSchema>;

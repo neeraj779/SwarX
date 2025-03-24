@@ -1,34 +1,30 @@
 import { useFetch } from '@/shared/utils/fetch.util';
 import { Endpoints } from '@/shared/constants/endpoint.constant';
+import { ErrorMessages } from '@/shared/constants/error.constant';
+import { AppError } from '@/shared/types/error.types';
 import {
 	GetArtistAlbums,
 	GetArtistById,
 	GetArtistByLink,
 	GetArtistSongs,
 } from './types/artist.types';
-import {
-	artistAlbumAPIResponseSchema,
-	artistAlbumSchema,
-	artistAPIResponseSchema,
-	artistSchema,
-	artistSongAPIResponseSchema,
-	artistSongSchema,
-} from './schemas';
-import { z } from 'zod';
 import { albumResponseDto } from '@/modules/album/dto/album.dto';
 import { songResponseDto } from '@/modules/song/dto/song.dto';
 import { artistResponseDto } from './dto/artist.dto';
+import { Artist, ArtistAPIResponse } from './schemas/artist.schema';
+import { ArtistSong, ArtistSongAPIResponse } from './schemas/artist-song.schema';
+import { ArtistAlbum, ArtistAlbumAPIResponse } from './schemas/artist-album.schema';
 
 export class ArtistService {
 	async getArtistById({
 		artistId,
-		page = 0,
-		songCount = 10,
-		albumCount = 10,
+		page = '0',
+		songCount = '10',
+		albumCount = '10',
 		sortBy = 'popularity',
 		sortOrder = 'desc',
-	}: GetArtistById): Promise<z.infer<typeof artistSchema>> {
-		const { data } = await useFetch<z.infer<typeof artistAPIResponseSchema>>({
+	}: GetArtistById): Promise<Artist> {
+		const { data } = await useFetch<ArtistAPIResponse>({
 			endpoint: Endpoints.artists.id,
 			params: {
 				artistId,
@@ -40,20 +36,20 @@ export class ArtistService {
 			},
 		});
 
-		if (!data) throw new Error('Artist not found');
+		if (!data) throw AppError.NotFound(ErrorMessages.Artist.NOT_FOUND);
 
 		return artistResponseDto(data);
 	}
 
 	async getArtistByLink({
 		token,
-		page = 0,
-		songCount = 10,
-		albumCount = 10,
+		page = '0',
+		songCount = '10',
+		albumCount = '10',
 		sortBy = 'popularity',
 		sortOrder = 'desc',
-	}: GetArtistByLink): Promise<z.infer<typeof artistSchema>> {
-		const { data } = await useFetch<z.infer<typeof artistAPIResponseSchema>>({
+	}: GetArtistByLink): Promise<Artist> {
+		const { data } = await useFetch<ArtistAPIResponse>({
 			endpoint: Endpoints.artists.link,
 			params: {
 				token,
@@ -66,18 +62,18 @@ export class ArtistService {
 			},
 		});
 
-		if (!data) throw new Error('Artist not found');
+		if (!data) throw AppError.NotFound(ErrorMessages.Artist.NOT_FOUND);
 
 		return artistResponseDto(data);
 	}
 
 	async getArtistSongs({
 		artistId,
-		page = 0,
+		page = '0',
 		sortBy = 'popularity',
 		sortOrder = 'desc',
-	}: GetArtistSongs): Promise<z.infer<typeof artistSongSchema>> {
-		const { data } = await useFetch<z.infer<typeof artistSongAPIResponseSchema>>({
+	}: GetArtistSongs): Promise<ArtistSong> {
+		const { data } = await useFetch<ArtistSongAPIResponse>({
 			endpoint: Endpoints.artists.songs,
 			params: {
 				artistId,
@@ -87,7 +83,7 @@ export class ArtistService {
 			},
 		});
 
-		if (!data) throw new Error('Songs not found');
+		if (!data) throw AppError.NotFound(ErrorMessages.Artist.SONGS_NOT_FOUND);
 
 		return {
 			total: data.topSongs.total,
@@ -97,11 +93,11 @@ export class ArtistService {
 
 	async getArtistAlbums({
 		artistId,
-		page = 0,
+		page = '0',
 		sortBy = 'popularity',
 		sortOrder = 'desc',
-	}: GetArtistAlbums): Promise<z.infer<typeof artistAlbumSchema>> {
-		const { data } = await useFetch<z.infer<typeof artistAlbumAPIResponseSchema>>({
+	}: GetArtistAlbums): Promise<ArtistAlbum> {
+		const { data } = await useFetch<ArtistAlbumAPIResponse>({
 			endpoint: Endpoints.artists.albums,
 			params: {
 				artistId,
@@ -111,7 +107,7 @@ export class ArtistService {
 			},
 		});
 
-		if (!data) throw new Error('Albums not found');
+		if (!data) throw AppError.NotFound(ErrorMessages.Artist.ALBUMS_NOT_FOUND);
 
 		return {
 			total: data.topAlbums.total,
@@ -119,3 +115,5 @@ export class ArtistService {
 		};
 	}
 }
+
+export const artistService = new ArtistService();

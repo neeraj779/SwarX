@@ -9,7 +9,7 @@ export const useFetch = async <T>({
 	context,
 }: {
 	endpoint: EndpointValue;
-	params: Record<string, string | number>;
+	params: Record<string, string>;
 	context?: 'android' | 'web6dot0';
 }): Promise<{ data: T; ok: Response['ok'] }> => {
 	const url = new URL('https://www.jiosaavn.com/api.php');

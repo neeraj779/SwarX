@@ -1,11 +1,12 @@
-export interface GetPlaylistById {
-	id: string;
-	limit: number;
-	page: number;
+interface PaginationParams {
+	limit?: string;
+	page?: string;
 }
 
-export interface GetPlaylistByLink {
+export interface GetPlaylistById extends PaginationParams {
+	id: string;
+}
+
+export interface GetPlaylistByLink extends PaginationParams {
 	token: string;
-	limit: number;
-	page: number;
 }

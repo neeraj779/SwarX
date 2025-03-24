@@ -51,3 +51,6 @@ export const songSearchAlbumSchema = z.object({
 		}),
 	),
 });
+
+export type SongSearchAlbumAPIResponse = z.infer<typeof songSearchAlbumAPIResponseSchema>;
+export type SongSearchAlbum = z.infer<typeof songSearchAlbumSchema>;

@@ -1,23 +1,5 @@
-export interface SearchSongs {
+export interface SearchParams {
 	query: string;
-	page: number;
-	limit: number;
-}
-
-export interface SearchAlbums {
-	query: string;
-	page: number;
-	limit: number;
-}
-
-export interface SearchPlaylists {
-	query: string;
-	page: number;
-	limit: number;
-}
-
-export interface SearchArtists {
-	query: string;
-	page: number;
-	limit: number;
+	page?: string;
+	limit?: string;
 }

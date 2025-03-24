@@ -3,26 +3,30 @@ import { z } from 'zod';
 const sortBySchema = z.enum(['popularity', 'latest', 'alphabetical']);
 const sortOrderSchema = z.enum(['asc', 'desc']);
 
-export const artistByIdOrLinkSchema = z.object({
-	link: z
-		.string()
-		.url()
-		.optional()
-		.transform(value => value?.match(/jiosaavn\.com\/artist\/[^/]+\/([^/]+)$/)?.[1]),
-	id: z.string().optional(),
-	page: z.string().pipe(z.coerce.number()).optional(),
-	songCount: z.string().pipe(z.coerce.number()).optional(),
-	albumCount: z.string().pipe(z.coerce.number()).optional(),
-	sortBy: z.enum(['popularity', 'latest', 'alphabetical']).optional(),
-	sortOrder: z.enum(['asc', 'desc']).optional(),
-});
+const extractArtistIdFromLink = (value?: string) =>
+	value?.match(/jiosaavn\.com\/artist\/[^/]+\/([^/]+)$/)?.[1];
+
+export const artistByIdOrLinkSchema = z
+	.object({
+		link: z.string().url().optional().transform(extractArtistIdFromLink),
+		id: z.string().optional(),
+		page: z.string().optional(),
+		songCount: z.string().optional(),
+		albumCount: z.string().optional(),
+		sortBy: sortBySchema.optional(),
+		sortOrder: sortOrderSchema.optional(),
+	})
+	.refine(data => data.id || data.link, {
+		message: 'Either artist ID or link is required',
+		path: ['id'],
+	});
 
 export const artistIdParamsSchema = z.object({
 	id: z.string(),
 });
 
 export const artistPaginatedQuerySchema = z.object({
-	page: z.string().pipe(z.coerce.number()).optional(),
+	page: z.string().optional(),
 	sortBy: sortBySchema.optional(),
 	sortOrder: sortOrderSchema.optional(),
 });

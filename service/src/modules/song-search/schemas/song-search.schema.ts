@@ -130,7 +130,7 @@ export const songSearchAPIResponseSchema = z.object({
 	}),
 });
 
-const songSearchResponseSchema = <T>(Schema: z.ZodType<T, any, any>) =>
+const songSearchResponseSchema = <T extends z.ZodTypeAny>(Schema: T) =>
 	z.object({
 		results: Schema,
 		position: z.number(),
@@ -213,14 +213,16 @@ export const songSearchSchema = z.object({
 });
 
 export const songSearchQuerySchema = z.object({
-	query: z.string(),
+	query: z.string().min(1, 'Search query cannot be empty'),
 });
 
 export const songSearchPaginatedQuerySchema = z.object({
-	query: z.string(),
-	page: z.string().pipe(z.coerce.number()).optional(),
-	limit: z.string().pipe(z.coerce.number()).optional(),
+	query: z.string().min(1, 'Search query cannot be empty'),
+	page: z.string().optional(),
+	limit: z.string().optional(),
 });
 
+export type SongSearch = z.infer<typeof songSearchSchema>;
+export type SongSearchAPIResponse = z.infer<typeof songSearchAPIResponseSchema>;
 export type SongSearchQueryInput = z.infer<typeof songSearchQuerySchema>;
 export type SongSearchPaginatedQueryInput = z.infer<typeof songSearchPaginatedQuerySchema>;

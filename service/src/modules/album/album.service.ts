@@ -1,23 +1,24 @@
 import { useFetch } from '@/shared/utils/fetch.util';
 import { Endpoints } from '@/shared/constants/endpoint.constant';
-import { z } from 'zod';
+import { ErrorMessages } from '@/shared/constants/error.constant';
+import { AppError } from '@/shared/types/error.types';
 import { albumResponseDto } from '@/modules/album/dto/album.dto';
-import { albumAPIResponseSchema, albumSchema } from './schemas/album.schema';
+import { Album, AlbumAPIResponse } from './schemas/album.schema';
 
 export class AlbumService {
-	async getAlbumById(id: string): Promise<z.infer<typeof albumSchema>> {
-		const { data } = await useFetch<z.infer<typeof albumAPIResponseSchema>>({
+	async getAlbumById(id: string): Promise<Album> {
+		const { data } = await useFetch<AlbumAPIResponse>({
 			endpoint: Endpoints.albums.id,
 			params: { albumid: id },
 		});
 
-		if (!data) throw new Error('Album not found');
+		if (!data) throw AppError.NotFound(ErrorMessages.Album.NOT_FOUND);
 
 		return albumResponseDto(data);
 	}
 
-	async getAlbumByLink(token: string): Promise<z.infer<typeof albumSchema>> {
-		const { data } = await useFetch<z.infer<typeof albumAPIResponseSchema>>({
+	async getAlbumByLink(token: string): Promise<Album> {
+		const { data } = await useFetch<AlbumAPIResponse>({
 			endpoint: Endpoints.albums.link,
 			params: {
 				token,
@@ -25,8 +26,10 @@ export class AlbumService {
 			},
 		});
 
-		if (!data) throw new Error('Album not found');
+		if (!data) throw AppError.NotFound(ErrorMessages.Album.NOT_FOUND);
 
 		return albumResponseDto(data);
 	}
 }
+
+export const albumService = new AlbumService();

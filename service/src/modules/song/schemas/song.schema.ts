@@ -90,14 +90,19 @@ export const songSchema = z.object({
 	downloadUrl: z.array(downloadLinkSchema),
 });
 
-export const songByIdsOrLinkSchema = z.object({
-	ids: z.string().optional(),
-	link: z
-		.string()
-		.url()
-		.optional()
-		.transform(value => value?.match(/jiosaavn\.com\/song\/[^/]+\/([^/]+)$/)?.[1]),
-});
+export const songByIdsOrLinkSchema = z
+	.object({
+		ids: z.string().optional(),
+		link: z
+			.string()
+			.url()
+			.optional()
+			.transform(value => value?.match(/jiosaavn\.com\/song\/[^/]+\/([^/]+)$/)?.[1]),
+	})
+	.refine(data => data.ids || data.link, {
+		message: 'Either song IDs or link is required',
+		path: ['ids'],
+	});
 
 export const songIdParamsSchema = z.object({
 	id: z.string(),
@@ -108,9 +113,11 @@ export const songLyricsQuerySchema = z.object({
 });
 
 export const songSuggestionsQuerySchema = z.object({
-	limit: z.number().optional(),
+	limit: z.string().optional(),
 });
 
+export type Song = z.infer<typeof songSchema>;
+export type SongAPIResponse = z.infer<typeof songAPIResponseSchema>;
 export type SongByIdsOrLinkInput = z.infer<typeof songByIdsOrLinkSchema>;
 export type SongIdParamsInput = z.infer<typeof songIdParamsSchema>;
 export type SongLyricsQueryInput = z.infer<typeof songLyricsQuerySchema>;

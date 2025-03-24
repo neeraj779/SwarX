@@ -2,16 +2,19 @@ import { downloadLinkSchema } from '@/shared/schemas/download.schema';
 import { songAPIResponseSchema, songSchema } from '@/modules/song/schemas/song.schema';
 import { z } from 'zod';
 
-export const albumByIdOrLinkSchema = z.object({
-	id: z.string().optional(),
-	link: z
-		.string()
-		.url()
-		.optional()
-		.transform(value => value?.match(/jiosaavn\.com\/album\/[^/]+\/([^/]+)$/)?.[1]),
-});
-
-export type AlbumByIdOrLinkInput = z.infer<typeof albumByIdOrLinkSchema>;
+export const albumByIdOrLinkSchema = z
+	.object({
+		id: z.string().optional(),
+		link: z
+			.string()
+			.url()
+			.optional()
+			.transform(value => value?.match(/jiosaavn\.com\/album\/[^/]+\/([^/]+)$/)?.[1]),
+	})
+	.refine(data => data.id || data.link, {
+		message: 'Either album ID or link is required',
+		path: ['id'],
+	});
 
 export const albumAPIResponseSchema = z.object({
 	id: z.string(),
@@ -52,3 +55,7 @@ export const albumSchema = z.object({
 	image: z.array(downloadLinkSchema),
 	songs: z.array(songSchema).nullable(),
 });
+
+export type AlbumByIdOrLinkInput = z.infer<typeof albumByIdOrLinkSchema>;
+export type AlbumAPIResponse = z.infer<typeof albumAPIResponseSchema>;
+export type Album = z.infer<typeof albumSchema>;

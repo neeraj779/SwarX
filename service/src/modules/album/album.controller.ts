@@ -1,30 +1,16 @@
 import { asyncHandler } from '@/middleware/error.middleware';
-import { AlbumService } from './album.service';
-import { AlbumByIdOrLinkInput, albumByIdOrLinkSchema } from './schemas/album.schema';
+import { AlbumByIdOrLinkInput } from './schemas/album.schema';
+import { albumService } from './album.service';
 
 export class AlbumController {
-	private albumService: AlbumService;
-
-	constructor() {
-		this.albumService = new AlbumService();
-	}
-
 	public getAlbumByIdOrLink = asyncHandler<{
 		query: AlbumByIdOrLinkInput;
 	}>(async (req, res): Promise<void> => {
-		const { id, link } = albumByIdOrLinkSchema.parse(req.query);
-
-		if (!id && !link) {
-			res.status(400).json({
-				success: false,
-				message: 'Either album ID or link is required',
-			});
-			return;
-		}
+		const { id, link } = req.query;
 
 		const response = link
-			? await this.albumService.getAlbumByLink(link)
-			: await this.albumService.getAlbumById(id!);
+			? await albumService.getAlbumByLink(link)
+			: await albumService.getAlbumById(id!);
 
 		res.json({ success: true, data: response });
 	});

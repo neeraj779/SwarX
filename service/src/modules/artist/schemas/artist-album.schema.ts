@@ -21,3 +21,6 @@ export const artistAlbumSchema = z.object({
 	total: z.number(),
 	albums: z.array(albumSchema),
 });
+
+export type ArtistAlbumAPIResponse = z.infer<typeof artistAlbumAPIResponseSchema>;
+export type ArtistAlbum = z.infer<typeof artistAlbumSchema>;

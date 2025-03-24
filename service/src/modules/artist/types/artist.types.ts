@@ -1,31 +1,27 @@
-export interface GetArtistAlbums {
-	artistId: string;
-	page: number;
-	sortBy: 'popularity' | 'latest' | 'alphabetical';
-	sortOrder: 'asc' | 'desc';
+type SortBy = 'popularity' | 'latest' | 'alphabetical';
+type SortOrder = 'asc' | 'desc';
+
+interface PaginationAndSorting {
+	page?: string;
+	sortBy?: SortBy;
+	sortOrder?: SortOrder;
 }
 
-export interface GetArtistSongs {
+interface ArtistIdentifier {
 	artistId: string;
-	page: number;
-	sortBy: 'popularity' | 'latest' | 'alphabetical';
-	sortOrder: 'asc' | 'desc';
 }
 
-export interface GetArtistByLink {
+interface Counts {
+	songCount?: string;
+	albumCount?: string;
+}
+
+export interface GetArtistAlbums extends ArtistIdentifier, PaginationAndSorting {}
+
+export interface GetArtistSongs extends ArtistIdentifier, PaginationAndSorting {}
+
+export interface GetArtistByLink extends PaginationAndSorting, Counts {
 	token: string;
-	page: number;
-	songCount: number;
-	albumCount: number;
-	sortBy: 'popularity' | 'latest' | 'alphabetical';
-	sortOrder: 'asc' | 'desc';
 }
 
-export interface GetArtistById {
-	artistId: string;
-	page: number;
-	songCount: number;
-	albumCount: number;
-	sortBy: 'popularity' | 'latest' | 'alphabetical';
-	sortOrder: 'asc' | 'desc';
-}
+export interface GetArtistById extends ArtistIdentifier, PaginationAndSorting, Counts {}

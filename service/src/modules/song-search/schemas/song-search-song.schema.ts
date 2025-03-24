@@ -7,8 +7,11 @@ export const searchSongAPIResponseSchema = z.object({
 	results: z.array(songAPIResponseSchema),
 });
 
-export const searchsongSchema = z.object({
+export const searchSongSchema = z.object({
 	total: z.number(),
 	start: z.number(),
 	results: z.array(songSchema),
 });
+
+export type SearchSongAPIResponse = z.infer<typeof searchSongAPIResponseSchema>;
+export type SearchSong = z.infer<typeof searchSongSchema>;

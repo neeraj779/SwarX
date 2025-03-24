@@ -11,3 +11,6 @@ export const lyricsAPIResponseSchema = z.object({
 	lyrics_copyright: z.string(),
 	snippet: z.string(),
 });
+
+export type Lyrics = z.infer<typeof lyricsSchema>;
+export type LyricsAPIResponse = z.infer<typeof lyricsAPIResponseSchema>;

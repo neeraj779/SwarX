@@ -13,3 +13,5 @@ export const songSuggestionAPIResponseSchema = z
 		stationid: z.string(),
 	})
 	.and(songStationAPIResponseSchema);
+
+export type SongSuggestionAPIResponse = z.infer<typeof songSuggestionAPIResponseSchema>;
