@@ -6,7 +6,7 @@ export const securityHeaders = {
 	contentSecurityPolicy: {
 		directives: {
 			defaultSrc: ["'self'"],
-			scriptSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+			scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
 			styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
 			imgSrc: ["'self'", 'data:', 'https:'],
 			connectSrc: ["'self'", 'https://cdn.jsdelivr.net'],
