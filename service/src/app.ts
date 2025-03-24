@@ -5,8 +5,15 @@ import { toNodeHandler } from 'better-auth/node';
 import { errorHandler, notFoundHandler } from '@/middleware/error.middleware';
 import { apiRouter } from './routes';
 import { env } from './config/env';
+import { requestLogger } from './middleware/logger.middleware';
+import { securityHeaders, trustProxy } from './middleware/security.middleware';
+import helmet from 'helmet';
 
 const app = express();
+
+app.set('trust proxy', trustProxy);
+
+app.use(helmet(securityHeaders));
 
 app.use(
 	cors({
@@ -16,6 +23,8 @@ app.use(
 );
 
 app.all('/api/auth/*', toNodeHandler(auth));
+
+app.use(requestLogger);
 
 app.use('/api', apiRouter);
 

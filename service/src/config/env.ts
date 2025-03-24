@@ -11,6 +11,10 @@ const envSchema = z.object({
 		.transform(str => str.split(','))
 		.pipe(z.array(z.string().url()))
 		.optional(),
+	TRUST_PROXY: z
+		.string()
+		.transform(str => str.split(','))
+		.default('loopback,linklocal,uniquelocal'),
 	LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 	DB_FILE_NAME: z.string().default('file:db.sqlite'),
 	AUTH_SECRET: z.string().min(1),
