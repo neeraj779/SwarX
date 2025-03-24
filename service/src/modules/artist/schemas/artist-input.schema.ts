@@ -6,20 +6,26 @@ const sortOrderSchema = z.enum(['asc', 'desc']);
 const extractArtistIdFromLink = (value?: string) =>
 	value?.match(/jiosaavn\.com\/artist\/[^/]+\/([^/]+)$/)?.[1];
 
-export const artistByIdOrLinkSchema = z
-	.object({
-		link: z.string().url().optional().transform(extractArtistIdFromLink),
-		id: z.string().optional(),
-		page: z.string().optional(),
-		songCount: z.string().optional(),
-		albumCount: z.string().optional(),
-		sortBy: sortBySchema.optional(),
-		sortOrder: sortOrderSchema.optional(),
-	})
-	.refine(data => data.id || data.link, {
-		message: 'Either artist ID or link is required',
-		path: ['id'],
-	});
+const commonFields = {
+	page: z.string().optional(),
+	songCount: z.string().optional(),
+	albumCount: z.string().optional(),
+	sortBy: sortBySchema.optional(),
+	sortOrder: sortOrderSchema.optional(),
+};
+
+export const artistByIdOrLinkSchema = z.union([
+	z.object({
+		id: z.string(),
+		link: z.undefined(),
+		...commonFields,
+	}),
+	z.object({
+		id: z.undefined(),
+		link: z.string().url().transform(extractArtistIdFromLink),
+		...commonFields,
+	}),
+]);
 
 export const artistIdParamsSchema = z.object({
 	id: z.string(),

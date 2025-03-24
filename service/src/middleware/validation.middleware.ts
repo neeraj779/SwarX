@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject, ZodError, ZodEffects } from 'zod';
+import { AnyZodObject, ZodError } from 'zod';
 
 export type ValidationType = 'body' | 'query' | 'params';
-export type ValidationSchema = AnyZodObject | ZodEffects<AnyZodObject>;
 
-export const createValidationMiddleware = (
-	schema: ValidationSchema,
-	type: ValidationType = 'body',
-) => {
+export const createValidationMiddleware = (schema: AnyZodObject, type: ValidationType = 'body') => {
 	return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		try {
 			const data = req[type];
@@ -29,5 +25,5 @@ export const createValidationMiddleware = (
 
 type ValidationMiddleware = ReturnType<typeof createValidationMiddleware>;
 
-export const zValidator = (type: ValidationType, schema: ValidationSchema): ValidationMiddleware =>
+export const zValidator = (type: ValidationType, schema: AnyZodObject): ValidationMiddleware =>
 	createValidationMiddleware(schema, type);

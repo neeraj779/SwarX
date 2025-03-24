@@ -2,19 +2,19 @@ import { downloadLinkSchema } from '@/shared/schemas/download.schema';
 import { songAPIResponseSchema, songSchema } from '@/modules/song/schemas/song.schema';
 import { z } from 'zod';
 
-export const albumByIdOrLinkSchema = z
-	.object({
-		id: z.string().optional(),
-		link: z
-			.string()
-			.url()
-			.optional()
-			.transform(value => value?.match(/jiosaavn\.com\/album\/[^/]+\/([^/]+)$/)?.[1]),
-	})
-	.refine(data => data.id || data.link, {
-		message: 'Either album ID or link is required',
-		path: ['id'],
-	});
+const extractAlbumIdFromLink = (value: string) =>
+	value.match(/jiosaavn\.com\/album\/[^/]+\/([^/]+)$/)?.[1];
+
+export const albumByIdOrLinkSchema = z.union([
+	z.object({
+		id: z.string(),
+		link: z.undefined(),
+	}),
+	z.object({
+		id: z.undefined(),
+		link: z.string().url().transform(extractAlbumIdFromLink),
+	}),
+]);
 
 export const albumAPIResponseSchema = z.object({
 	id: z.string(),

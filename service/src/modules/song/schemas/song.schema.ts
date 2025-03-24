@@ -90,19 +90,19 @@ export const songSchema = z.object({
 	downloadUrl: z.array(downloadLinkSchema),
 });
 
-export const songByIdsOrLinkSchema = z
-	.object({
-		ids: z.string().optional(),
+export const songByIdsOrLinkSchema = z.union([
+	z.object({
+		ids: z.string().trim().min(1, 'Song ID(s) are required.'),
+		link: z.undefined(),
+	}),
+	z.object({
+		ids: z.undefined(),
 		link: z
 			.string()
 			.url()
-			.optional()
 			.transform(value => value?.match(/jiosaavn\.com\/song\/[^/]+\/([^/]+)$/)?.[1]),
-	})
-	.refine(data => data.ids || data.link, {
-		message: 'Either song IDs or link is required',
-		path: ['ids'],
-	});
+	}),
+]);
 
 export const songIdParamsSchema = z.object({
 	id: z.string(),
