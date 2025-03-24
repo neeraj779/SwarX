@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { healthRouter } from '@/routes/health.routes';
-import { songRouter } from '@/routes/song.routes';
-import { albumRouter } from '@/routes/album.routes';
-import { artistRouter } from '@/routes/artist.routes';
-import { searchRouter } from '@/routes/search.routes';
-import { playlistRouter } from '@/routes/playlist.routes';
+import { healthRouter } from '@/modules/health/health.routes';
+import { songRouter } from '@/modules/song/song.routes';
+import { albumRouter } from '@/modules/album/album.routes';
+import { artistRouter } from '@/modules/artist/artist.routes';
+import { searchRouter } from '@/modules/song-search/song-search.routes';
+import { playlistRouter } from '@/modules/playlist/playlist.routes';
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
-import { AppError, ErrorResponse } from '@/types/error.types';
+import { AppError, ErrorResponse } from '@/shared/types/error.types';
 import { env } from '@/config/env';
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
