@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Home, Search, Library, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
