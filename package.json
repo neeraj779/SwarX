@@ -8,8 +8,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=service\" \"npm run dev --workspace=ui\"",
-    "lint-staged": "lint-staged",
-    "prepare": "husky"
+    "lint-staged": "lint-staged"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",

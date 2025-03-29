@@ -1,10 +1,13 @@
+import { useSession } from '@/lib/auth-client';
 import DashboardPage from '@/pages/dashboard';
+import AuthPage from '@/pages/auth';
 import { Navigate, Route, Routes } from 'react-router';
 import { match } from 'ts-pattern';
+import { AppLayout } from '@/layout/app-layout';
+import { AuthLayout } from '@/layout/auth-layout';
 
 // Temporary components until real ones are created
 const LoadingAnimation = () => <div>Loading...</div>;
-
 const NotFound = () => <div>404 Not Found</div>;
 
 type RouteConfig = {
@@ -19,7 +22,28 @@ type RouteConfig = {
 const routes: RouteConfig[] = [
   {
     path: '/',
-    element: <DashboardPage />
+    element: <AppLayout />,
+    protected: true,
+    children: [
+      {
+        path: '',
+        element: <DashboardPage />
+      }
+    ]
+  },
+  {
+    path: '/auth',
+    element: <AuthLayout />,
+    children: [
+      {
+        path: 'login',
+        element: <AuthPage mode="login" />
+      },
+      {
+        path: 'signup',
+        element: <AuthPage mode="signup" />
+      }
+    ]
   },
   {
     path: '*',
@@ -34,24 +58,19 @@ const ProtectedRoute = ({
   children: React.ReactNode;
   requiredRole?: string[];
 }) => {
-  // TODO: Replace with actual session management
-  const session = { user: { role: 'user' } };
-  const isPending = false;
-
+  const { data: session, isPending } = useSession();
+  const userRole = (session?.user as { role?: string })?.role;
   if (isPending) return <LoadingAnimation />;
-
-  const userRole = session?.user?.role;
 
   if (isUserRoleInvalid(requiredRole, userRole)) {
     return <Navigate to="/" replace />;
   }
 
-  return session ? <>{children}</> : <Navigate to="/auth" replace />;
+  return session ? <>{children}</> : <Navigate to="/auth/login" replace />;
 };
 
 const isUserRoleInvalid = (requiredRole?: string[], userRole?: string) => {
-  if (!requiredRole) return false;
-  return !requiredRole.includes(userRole || '');
+  return requiredRole && userRole && !requiredRole.includes(userRole);
 };
 
 const generateRoutes = (routes: RouteConfig[]): React.ReactNode => {

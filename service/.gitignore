@@ -31,6 +31,7 @@ pids
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+drizzle/
 
 # Coverage directory used by tools like istanbul
 coverage
