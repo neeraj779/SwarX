@@ -9,17 +9,28 @@
     "lint": "next lint",
     "prepare": "husky",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "auth:schema:generate": "npx @better-auth/cli generate --output src/db/auth.schema.ts --y",
+    "db:push": "npx drizzle-kit push",
+    "db:pull": "npx drizzle-kit pull",
+    "db:apply": "npm run db:generate && read -p 'Are you sure you want to run migrations? (y/N) ' confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] && npm run db:migrate",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
+    "db:studio": "npx drizzle-kit studio --port 3003 --verbose"
   },
   "dependencies": {
+    "better-auth": "^1.2.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.41.0",
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
+    "pg": "^8.14.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.1.0",
-    "tw-animate-css": "^1.2.5"
+    "tw-animate-css": "^1.2.5",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
@@ -28,8 +39,10 @@
     "@tailwindcss/postcss": "^4",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "^20",
+    "@types/pg": "^8.11.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.30.6",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "eslint-config-prettier": "^10.1.1",
