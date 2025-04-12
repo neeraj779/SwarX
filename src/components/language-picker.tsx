@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useRouter } from "next/navigation";
 
 import { SUPPORTED_LANGUAGES } from "@/constants/language.constants";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { Check, ChevronDown, Globe, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -17,6 +17,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { Skeleton } from "./ui/skeleton";
 
 interface LanguagePickerProps {
   initialLanguages: string[];
@@ -24,9 +25,19 @@ interface LanguagePickerProps {
 
 export function LanguagePicker({ initialLanguages }: LanguagePickerProps) {
   const router = useRouter();
-  const [selectedLanguages, setSelectedLanguages] =
-    useState<string[]>(initialLanguages);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const cookieLanguages = getCookie("language")?.toString();
+    if (cookieLanguages) {
+      setSelectedLanguages(cookieLanguages.split(","));
+    } else {
+      setSelectedLanguages(initialLanguages);
+    }
+    setIsLoading(false);
+  }, [initialLanguages]);
 
   const languageCount = selectedLanguages.length;
 
@@ -44,10 +55,16 @@ export function LanguagePicker({ initialLanguages }: LanguagePickerProps) {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className="min-w-[120px]">
           <Globe className="text-primary h-4 w-4" />
-          <span className="hidden font-medium sm:inline">
-            {languageCount ? `${languageCount} Selected` : "Languages"}
+          <span className="font-medium">
+            {isLoading ? (
+              <Skeleton className="h-4 w-20" />
+            ) : languageCount ? (
+              `${languageCount} Selected`
+            ) : (
+              "Languages"
+            )}
           </span>
           <ChevronDown className="h-3 w-3 opacity-70" />
         </Button>
