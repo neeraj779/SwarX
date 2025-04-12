@@ -61,8 +61,15 @@ export default async function Home() {
     <div className="from-background via-background/95 to-background/90 min-h-screen bg-gradient-to-b">
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8">
         {Object.entries(homedata).map(([key, section], index) => {
-          if ("random_songs_listid" in section || key === "discover")
-            return null;
+          const isEmptySection =
+            typeof section === "object" &&
+            "data" in section &&
+            (!section.data || section.data.length === 0);
+
+          const isSkippableSection =
+            "random_songs_listid" in section || key === "discover";
+
+          if (isEmptySection || isSkippableSection) return null;
 
           const config = getSectionConfig(key);
 
