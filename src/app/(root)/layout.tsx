@@ -11,7 +11,7 @@ export default function Layout({
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
-      <SidebarInset>
+      <SidebarInset className="overflow-hidden">
         <SiteHeader />
         <div className="flex flex-1 flex-col">{children}</div>
       </SidebarInset>

@@ -8,6 +8,7 @@ const envServerSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   GITHUB_CLIENT_ID: z.string().min(1),
   GITHUB_CLIENT_SECRET: z.string().min(1),
+  SAAVNIFY_API_BASE_URL: z.string().url(),
 });
 
 function validateServerEnv(): z.infer<typeof envServerSchema> {

@@ -1,98 +1,107 @@
-import Image from "next/image";
+import { getHomeData } from "@/services/saavnify.service";
+import {
+  Music,
+  TrendingUp,
+  Album,
+  BarChart,
+  Radio,
+  PlayCircle,
+} from "lucide-react";
 
-export default function Home() {
+import { cn } from "@/lib/utils";
+
+import { SectionHeader } from "@/components/section-header";
+import { SliderCard } from "@/components/slider-card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+
+const getSectionConfig = (key: string) => {
+  switch (key) {
+    case "trending":
+      return {
+        icon: TrendingUp,
+        badge: { text: "Hot", icon: TrendingUp },
+        bannerTitle: "Trending Now",
+        bannerSubtitle: "What's hot in the music world",
+      };
+    case "albums":
+      return {
+        icon: Album,
+        badge: { text: "New", icon: Album },
+        bannerTitle: "Latest Albums",
+        bannerSubtitle: "Fresh releases from your favorite artists",
+      };
+    case "charts":
+      return {
+        icon: BarChart,
+        badge: { text: "Top", icon: BarChart },
+        bannerTitle: "Top Charts",
+        bannerSubtitle: "The most popular tracks right now",
+      };
+    case "radio":
+      return {
+        icon: Radio,
+        badge: { text: "Live", icon: Radio },
+        bannerTitle: "Radio Stations",
+        bannerSubtitle: "Tune in to your favorite stations",
+      };
+    default:
+      return {
+        icon: Music,
+        badge: { text: "Discover", icon: PlayCircle },
+        bannerTitle: "Discover Music",
+        bannerSubtitle: "Explore new sounds and artists",
+      };
+  }
+};
+
+export default async function Home() {
+  const homedata = await getHomeData();
+
   return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-center font-[family-name:var(--font-geist-mono)] text-sm/6 sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="rounded bg-black/[.05] px-1 py-0.5 font-[family-name:var(--font-geist-mono)] font-semibold dark:bg-white/[.06]">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="from-background via-background/95 to-background/90 min-h-screen bg-gradient-to-b">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8">
+        {Object.entries(homedata).map(([key, section], index) => {
+          if ("random_songs_listid" in section || key === "discover")
+            return null;
 
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <a
-            className="bg-foreground text-background flex h-10 items-center justify-center gap-2 rounded-full border border-solid border-transparent px-4 text-sm font-medium transition-colors hover:bg-[#383838] sm:h-12 sm:w-auto sm:px-5 sm:text-base dark:hover:bg-[#ccc]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer">
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="flex h-10 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium transition-colors hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:w-auto sm:px-5 sm:text-base md:w-[158px] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer">
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer">
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer">
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer">
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          const config = getSectionConfig(key);
+
+          return (
+            <div
+              key={key}
+              className={cn(
+                "mb-8 last:mb-0 sm:mb-10 md:mb-12",
+                index === 0 && "mt-2 sm:mt-4"
+              )}>
+              <SectionHeader
+                title={section.title}
+                icon={config.icon}
+                badge={config.badge}
+                className="mb-3 sm:mb-4"
+              />
+
+              <ScrollArea className="w-full">
+                <div className="flex gap-3 pb-3 sm:gap-4 sm:pb-4">
+                  {section.data.map(
+                    ({ id, name, url, subtitle, type, image, explicit }) => (
+                      <SliderCard
+                        key={id}
+                        name={name}
+                        url={url}
+                        subtitle={subtitle}
+                        type={type}
+                        image={image}
+                        explicit={explicit}
+                      />
+                    )
+                  )}
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
