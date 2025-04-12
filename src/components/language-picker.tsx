@@ -57,7 +57,7 @@ export function LanguagePicker({ initialLanguages }: LanguagePickerProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="min-w-[120px]">
           <Globe className="text-primary h-4 w-4" />
-          <span className="hidden font-medium sm:inline">
+          <span className="font-medium">
             {isLoading ? (
               <Skeleton className="h-4 w-20" />
             ) : languageCount ? (
