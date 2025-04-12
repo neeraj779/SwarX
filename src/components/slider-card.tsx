@@ -1,10 +1,9 @@
-import Image from "next/image";
-
 import type { MediaQuality, EntityType } from "@/types/common.types";
 import { PlayCircle } from "lucide-react";
 
 import { cn, getImageSrc } from "@/lib/utils";
 
+import { ImageWithFallback } from "./image-with-fallback";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 
@@ -54,7 +53,7 @@ export function SliderCard(props: SliderCardProps) {
               "border-primary/20 rounded-full border-2"
           )}>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          <Image
+          <ImageWithFallback
             src={imageSrc}
             width={200}
             height={200}

@@ -2,8 +2,12 @@
 
 import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import { SUPPORTED_LANGUAGES } from "@/constants/language.constants";
+import { setCookie } from "cookies-next";
 import { Check, ChevronDown, Globe, Save } from "lucide-react";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 
@@ -19,16 +23,22 @@ interface LanguagePickerProps {
 }
 
 export function LanguagePicker({ initialLanguages }: LanguagePickerProps) {
+  const router = useRouter();
   const [selectedLanguages, setSelectedLanguages] =
     useState<string[]>(initialLanguages);
-  const [tempSelected, setTempSelected] = useState<string[]>(initialLanguages);
   const [open, setOpen] = useState(false);
 
   const languageCount = selectedLanguages.length;
 
   const handleUpdateLanguages = () => {
-    setSelectedLanguages(tempSelected);
     setOpen(false);
+    setCookie("language", selectedLanguages.join(","), {
+      path: "/",
+    });
+
+    toast.success("Language Preferences Updated");
+
+    router.refresh();
   };
 
   return (
@@ -52,13 +62,13 @@ export function LanguagePicker({ initialLanguages }: LanguagePickerProps) {
           <div className="grid grid-cols-2 gap-2">
             {SUPPORTED_LANGUAGES.map((lang) => {
               const langValue = lang.toLowerCase();
-              const isSelected = tempSelected.includes(langValue);
+              const isSelected = selectedLanguages.includes(langValue);
 
               return (
                 <button
                   key={lang}
                   onClick={() => {
-                    setTempSelected((prev) =>
+                    setSelectedLanguages((prev) =>
                       prev.includes(langValue)
                         ? prev.filter((l) => l !== langValue)
                         : [...prev, langValue]
