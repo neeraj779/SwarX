@@ -34,7 +34,7 @@ export function ImageWithFallback(props: ImageProps) {
         src={src}
         alt={alt}
         onError={setError}
-        onLoadingComplete={() => setLoading(false)}
+        onLoad={() => setLoading(false)}
         className={cn(
           className,
           loading ? "opacity-0" : "opacity-100 transition-opacity duration-500",
