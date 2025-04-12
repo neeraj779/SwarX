@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 
-import { CloudDownload, type LucideIcon } from "lucide-react";
+import { MoonIcon, SunIcon, type LucideIcon } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -50,7 +50,8 @@ export function NavSecondary({
           <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
             <SidebarMenuButton asChild>
               <label>
-                <CloudDownload />
+                <SunIcon className="hidden [html.dark_&]:block" />
+                <MoonIcon className="hidden [html.light_&]:block" />
                 <span>Dark Mode</span>
                 {mounted ? (
                   <Switch
