@@ -4,6 +4,12 @@ import { cookies } from "next/headers";
 
 import { envServer } from "@/config/env.server";
 import { Language } from "@/constants/language.constants";
+import {
+  Chart,
+  FeaturedPlaylists,
+  TopAlbums,
+  TopArtist,
+} from "@/types/explore.types";
 import { HomeModulesMini } from "@/types/homeModules.types";
 import { ApiResponse } from "@/types/response.types";
 
@@ -44,6 +50,49 @@ async function fetchSaavnifyData<T>(
 export async function getHomeData(lang?: Language[], mini = true) {
   return await fetchSaavnifyData<HomeModulesMini>("/explore", {
     lang: lang?.join(",") ?? "",
+    mini: `${mini}`,
+  });
+}
+
+export async function getFeaturedPlaylists(
+  page = 1,
+  limit = 50,
+  lang?: Language,
+  mini = true
+) {
+  return await fetchSaavnifyData<FeaturedPlaylists>(
+    "/explore/featured-playlists",
+    {
+      page: `${page}`,
+      limit: `${limit}`,
+      lang: lang ?? "",
+      mini: `${mini}`,
+    }
+  );
+}
+
+export async function getTopAlbums(
+  page = 1,
+  limit = 50,
+  lang?: Language,
+  mini = true
+) {
+  return await fetchSaavnifyData<TopAlbums>("/explore/top-albums", {
+    page: `${page}`,
+    limit: `${limit}`,
+    lang: lang ?? "",
+    mini: `${mini}`,
+  });
+}
+
+export async function getCharts() {
+  return await fetchSaavnifyData<Chart[]>("/explore/charts");
+}
+
+export async function getTopArtists(page = 1, limit = 50, mini = true) {
+  return await fetchSaavnifyData<TopArtist[]>("/explore/top-artists", {
+    page: `${page}`,
+    limit: `${limit}`,
     mini: `${mini}`,
   });
 }
