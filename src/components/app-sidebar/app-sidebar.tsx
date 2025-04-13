@@ -5,13 +5,12 @@ import Link from "next/link";
 import {
   Flame,
   ListMusic,
-  TrendingUp,
   Star,
   Send,
   Settings,
   BarChart2,
   Search,
-  CloudDownload,
+  Music4Icon,
 } from "lucide-react";
 
 import {
@@ -32,13 +31,8 @@ const data = {
   navMain: [
     {
       name: "Fresh Drops",
-      url: "/fresh-drops",
+      url: "/album",
       icon: Flame,
-    },
-    {
-      name: "Trending Now",
-      url: "/trending",
-      icon: TrendingUp,
     },
     {
       name: "Search",
@@ -47,22 +41,17 @@ const data = {
     },
     {
       name: "Top Playlists",
-      url: "/playlists",
+      url: "/playlist",
       icon: ListMusic,
     },
     {
       name: "Top Charts",
-      url: "/charts",
+      url: "/chart",
       icon: BarChart2,
     },
     {
-      name: "Curated Vibes",
-      url: "#",
-      icon: Star,
-    },
-    {
       name: "Top Artists",
-      url: "#",
+      url: "/artist",
       icon: Star,
     },
   ],
@@ -90,7 +79,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5">
               <Link href="/">
-                <CloudDownload className="!size-5" />
+                <Music4Icon className="!size-5" />
                 <span className="text-base font-semibold">SwarX</span>
               </Link>
             </SidebarMenuButton>
