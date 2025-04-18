@@ -28,7 +28,7 @@ import {
 const mobileNavItems = [
   { label: "Home", icon: Home, href: "/" },
   { label: "Search", icon: Search, href: "/" },
-  { label: "Browse", icon: Compass, href: "#" },
+  { label: "Browse", icon: Compass, href: "#" }, // Special case
   { label: "Settings", icon: Cog, href: "/" },
 ];
 
@@ -39,6 +39,47 @@ const exploreItems = [
   { label: "Top Artists", icon: User2, href: "/artist" },
 ];
 
+function NavItem({
+  label,
+  href,
+  icon: Icon,
+  isActive,
+  onClick,
+}: {
+  label: string;
+  href?: string;
+  icon: React.ElementType;
+  isActive: boolean;
+  onClick?: () => void;
+}) {
+  const commonClasses = cn(
+    "group flex h-full w-1/4 flex-col items-center justify-center transition-all duration-300",
+    isActive ? "text-primary" : "text-muted-foreground hover:text-primary/80"
+  );
+
+  const iconClasses = cn("h-5 w-5 transition-all", isActive && "scale-110");
+  const labelClasses = cn(
+    "mt-1 text-xs font-medium transition-all",
+    isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"
+  );
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={commonClasses}>
+        <Icon className={iconClasses} />
+        <span className={labelClasses}>{label}</span>
+      </button>
+    );
+  }
+
+  return (
+    <Link href={href!} className={commonClasses}>
+      <Icon className={iconClasses} />
+      <span className={labelClasses}>{label}</span>
+    </Link>
+  );
+}
+
 export function MobileNav() {
   const pathname = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -46,7 +87,7 @@ export function MobileNav() {
   return (
     <>
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        <DrawerContent>
+        <DrawerContent className="z-100">
           <DrawerHeader>
             <DrawerTitle>Explore</DrawerTitle>
           </DrawerHeader>
@@ -66,41 +107,20 @@ export function MobileNav() {
       </Drawer>
 
       <nav className="border-border/30 bg-background/80 fixed inset-x-0 bottom-0 z-50 flex h-16 items-center justify-between border-t backdrop-blur-md md:hidden">
-        {mobileNavItems.slice().map(({ label, icon: Icon, href }) => {
-          const isActive = href === pathname;
+        {mobileNavItems.map(({ label, icon, href }) => {
+          const isActive = pathname === href;
 
           return (
-            <button
+            <NavItem
               key={label}
-              onClick={() => {
-                if (label === "Browse") {
-                  setIsDrawerOpen(true);
-                } else if (href) {
-                  window.location.href = href;
-                }
-              }}
-              className={cn(
-                "group flex h-full w-1/4 flex-col items-center justify-center transition-all duration-300",
-                isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-primary/80"
-              )}>
-              <Icon
-                className={cn(
-                  "h-5 w-5 transition-all",
-                  isActive && "scale-110"
-                )}
-              />
-              <span
-                className={cn(
-                  "mt-1 text-xs font-medium transition-all",
-                  isActive
-                    ? "opacity-100"
-                    : "opacity-70 group-hover:opacity-100"
-                )}>
-                {label}
-              </span>
-            </button>
+              label={label}
+              href={label === "Browse" ? undefined : href}
+              icon={icon}
+              isActive={isActive}
+              onClick={
+                label === "Browse" ? () => setIsDrawerOpen(true) : undefined
+              }
+            />
           );
         })}
       </nav>
