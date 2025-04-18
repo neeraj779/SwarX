@@ -47,7 +47,7 @@ export type Song = {
 };
 
 export type SongObject = {
-  songs: (Song | MiniEntity)[];
+  songs: Song[];
   modules?: SongModules;
 };
 
