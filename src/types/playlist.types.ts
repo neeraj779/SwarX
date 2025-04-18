@@ -1,8 +1,7 @@
 import {
-  ArtistMap,
+  ArtistMini,
   EntityType,
   MediaQuality,
-  MiniEntity,
   ModuleBase,
 } from "./common.types";
 import { ApiResponse } from "./response.types";
@@ -22,7 +21,7 @@ export type Playlist = {
   play_count: number;
   list_count: number;
   list_type: EntityType;
-  songs?: (Song | MiniEntity)[];
+  songs?: Song[];
   user_info: {
     user_id: string;
     last_updated: string;
@@ -35,16 +34,16 @@ export type Playlist = {
     follower_count: number;
     playlist_type: string;
     last_updated_timestamp: number;
-    artist_map?: ArtistMap;
+    artists?: ArtistMini[];
   };
   modules?: PlaylistModules;
 };
 
 export type PlaylistModules = {
-  recommend: PlaylistModuleBase & {
+  related_playlist: PlaylistModuleBase & {
     params: { id: string };
   };
-  currently_trending: PlaylistModuleBase & {
+  currently_trending_playlists: PlaylistModuleBase & {
     params: { type: string; lang: string };
   };
   artists: ModuleBase;

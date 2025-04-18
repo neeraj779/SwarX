@@ -1,4 +1,5 @@
 import {
+  EntityType,
   ImageQuality,
   MediaQuality,
   StreamQuality,
@@ -8,6 +9,11 @@ import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function getHref(url: string, type: EntityType) {
+  const token = url.split("/").at(-1);
+  return `/${type}/${token}`;
 }
 
 export function getImageSrc(
@@ -43,4 +49,19 @@ export function getDownloadLink(
   return typeof url === "string"
     ? url
     : (url[qualityIndex[quality]]?.link ?? "");
+}
+
+export function formatDuration(
+  seconds: number,
+  format: "hh:mm:ss" | "mm:ss"
+): string {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+
+  const pad = (n: number) => n.toString().padStart(2, "0");
+
+  return format === "hh:mm:ss"
+    ? `${pad(hrs)}:${pad(mins)}:${pad(secs)}`
+    : `${pad(mins + hrs * 60)}:${pad(secs)}`;
 }
