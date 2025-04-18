@@ -28,7 +28,7 @@ import {
 const mobileNavItems = [
   { label: "Home", icon: Home, href: "/" },
   { label: "Search", icon: Search, href: "/" },
-  { label: "Browse", icon: Compass, href: "#" }, // Special case
+  { label: "Browse", icon: Compass, href: "/" },
   { label: "Settings", icon: Cog, href: "/" },
 ];
 
