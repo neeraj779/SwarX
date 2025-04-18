@@ -1,6 +1,10 @@
 "use client";
 
-import { getSongDetails } from "@/services/saavnify.service";
+import {
+  getAlbumDetails,
+  getPlaylistDetails,
+  getSongDetails,
+} from "@/services/saavnify.service";
 import { useQueueStore } from "@/stores/use-queue-store";
 import { EntityType } from "@/types/common.types";
 import { EpisodeDetail } from "@/types/show.types";
@@ -36,6 +40,16 @@ export function PlayButton({
       case "song": {
         const songObj = await getSongDetails(token);
         tracks = songObj.songs;
+        break;
+      }
+      case "album": {
+        const album = await getAlbumDetails(token);
+        tracks = album.songs ?? [];
+        break;
+      }
+      case "playlist": {
+        const playlist = await getPlaylistDetails(token);
+        tracks = playlist.songs ?? [];
         break;
       }
     }
