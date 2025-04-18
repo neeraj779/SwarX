@@ -2,7 +2,6 @@ import {
   ArtistMap,
   EntityType,
   MediaQuality,
-  MiniEntity,
   ModuleBase,
 } from "./common.types";
 import { Song } from "./song.types";
@@ -22,13 +21,13 @@ export type Album = {
   year: number;
   list_count: number;
   list_type: EntityType;
-  artist_map?: ArtistMap;
+  artist_map: ArtistMap;
   song_count?: number;
   label_url?: string;
   copyright_text?: string;
   is_dolby_content?: boolean;
-  songs?: (Song | MiniEntity)[];
-  modules?: AlbumModules;
+  songs: Song[];
+  modules: AlbumModules;
 };
 
 export type AlbumModules = {
