@@ -51,10 +51,17 @@ export function getDownloadLink(
     : (url[qualityIndex[quality]]?.link ?? "");
 }
 
-export function formatDuration(seconds: number, format: "hh:mm:ss" | "mm:ss") {
-  const date = new Date(seconds * 1000);
+export function formatDuration(
+  seconds: number,
+  format: "hh:mm:ss" | "mm:ss"
+): string {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+
+  const pad = (n: number) => n.toString().padStart(2, "0");
 
   return format === "hh:mm:ss"
-    ? date.toISOString().slice(11, 19)
-    : date.toISOString().slice(14, 19);
+    ? `${pad(hrs)}:${pad(mins)}:${pad(secs)}`
+    : `${pad(mins + hrs * 60)}:${pad(secs)}`;
 }
