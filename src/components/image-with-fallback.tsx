@@ -1,9 +1,8 @@
 "use client";
 
-import { SyntheticEvent, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
-import Image from "next/image";
-import type { ImageProps } from "next/image";
+import Image, { ImageProps } from "next/image";
 
 import { cn } from "@/lib/utils";
 
@@ -11,17 +10,37 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function ImageWithFallback(props: ImageProps) {
   const { alt, src, className, ...restProps } = props;
+  const fallbackSrc = "/placeholder.jpg";
 
-  const [error, setError] = useState<SyntheticEvent<
-    HTMLImageElement,
-    Event
-  > | null>(null);
+  const [imgSrc, setImgSrc] = useState<string>(
+    typeof src === "string" && src.trim() ? src : fallbackSrc
+  );
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    setError(null);
-    setLoading(true);
+    if (typeof src === "string" && src.trim()) {
+      setImgSrc(src);
+      setHasError(false);
+      setLoading(true);
+    } else {
+      setImgSrc(fallbackSrc);
+      setHasError(true);
+      setLoading(false);
+    }
   }, [src]);
+
+  const handleError = () => {
+    if (!hasError) {
+      setImgSrc(fallbackSrc);
+      setHasError(true);
+      setLoading(false);
+    }
+  };
+
+  const handleLoad = () => {
+    setLoading(false);
+  };
 
   return (
     <div className="relative h-fit w-fit">
@@ -31,16 +50,16 @@ export function ImageWithFallback(props: ImageProps) {
         </div>
       )}
       <Image
-        src={src}
+        {...restProps}
+        src={imgSrc}
         alt={alt}
-        onError={setError}
-        onLoad={() => setLoading(false)}
+        onLoad={handleLoad}
+        onError={handleError}
         className={cn(
           className,
           loading ? "opacity-0" : "opacity-100 transition-opacity duration-500",
-          error && "dark:invert"
+          hasError && "dark:invert"
         )}
-        {...restProps}
       />
     </div>
   );

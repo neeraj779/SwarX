@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 
-import Image from "next/image";
-
 import { useQueueStore } from "@/stores/use-queue-store";
 import {
   Loader2,
@@ -18,6 +16,7 @@ import { useAudioPlayerContext } from "react-use-audio-player";
 
 import { cn, formatDuration, getDownloadLink, getImageSrc } from "@/lib/utils";
 
+import { ImageWithFallback } from "./image-with-fallback";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
 
@@ -146,12 +145,11 @@ export function MiniPlayer() {
       <div className="relative flex h-16 items-center justify-between gap-2 px-4">
         <div className="flex max-w-[40%] min-w-0 items-center gap-2 sm:max-w-[30%] sm:gap-3">
           <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg shadow-md">
-            <Image
+            <ImageWithFallback
               src={getImageSrc(currentTrack.image, "low")}
               width={40}
               height={40}
               alt={currentTrack.name}
-              className="h-full w-full object-cover"
               priority
             />
           </div>
