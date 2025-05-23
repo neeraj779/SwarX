@@ -15,6 +15,7 @@ import {
 import { HomeModulesMini } from "@/types/homeModules.types";
 import { Playlist } from "@/types/playlist.types";
 import { ApiResponse } from "@/types/response.types";
+import { AllSearch, SearchReturnType, TopSearch } from "@/types/search.types";
 import { SongObject } from "@/types/song.types";
 
 /**
@@ -170,4 +171,28 @@ export async function getPlaylistRecommendations(
     lang: lang?.join(",") ?? "",
     mini: `${mini}`,
   });
+}
+
+export async function getTopSearches() {
+  return await fetchSaavnifyData<TopSearch[]>("/search/top");
+}
+
+export async function search(
+  query: string,
+  type: "song" | "album" | "playlist" | "artist" | "show",
+  page = 1,
+  n = 50
+): Promise<SearchReturnType> {
+  return await fetchSaavnifyData(
+    `/search/${type === "show" ? "podcast" : type}s`,
+    {
+      q: query,
+      page: `${page}`,
+      n: `${n}`,
+    }
+  );
+}
+
+export async function searchAll(query: string) {
+  return await fetchSaavnifyData<AllSearch>("/search", { q: query });
 }

@@ -41,19 +41,17 @@ export function ImageWithFallback(props: ImageProps) {
   };
 
   return (
-    <div className="relative h-fit w-fit">
-      <Image
-        {...restProps}
-        src={imgSrc}
-        alt={alt}
-        onLoad={handleLoad}
-        onError={handleError}
-        className={cn(
-          className,
-          loading ? "opacity-0" : "opacity-100 transition-opacity duration-500",
-          hasError && "dark:invert"
-        )}
-      />
-    </div>
+    <Image
+      {...restProps}
+      src={imgSrc}
+      alt={alt}
+      onLoad={handleLoad}
+      onError={handleError}
+      className={cn(
+        className,
+        loading ? "opacity-0" : "opacity-100 transition-opacity duration-500",
+        hasError && "dark:invert"
+      )}
+    />
   );
 }

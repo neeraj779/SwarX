@@ -40,7 +40,7 @@ export type AllSearch = {
     image: MediaQuality;
     music: string;
     url: string;
-    type: string;
+    type: "album";
     position: number;
     year: number;
     is_movie: boolean;
@@ -54,7 +54,7 @@ export type AllSearch = {
     image: MediaQuality;
     album: string;
     url: string;
-    type: string;
+    type: "song";
     position: number;
     primary_artists?: string;
     singers?: string;
@@ -68,7 +68,7 @@ export type AllSearch = {
     extra: string;
     url: string;
     language: string;
-    type: string;
+    type: "playlist";
     position: number;
     firstname?: string;
     lastname?: string;
@@ -84,23 +84,27 @@ export type AllSearch = {
     image: MediaQuality;
     extra: string;
     url: string;
-    type: string;
+    type: "artist";
     subtitle: string;
     entity: number;
     position: number;
   }>;
-  top_query: SearchPaginated<AllSearch["songs"]["data"][0]>;
+  top_query: SearchPaginated<
+    AllSearch["songs"]["data"][0] & {
+      type: EntityType;
+    }
+  >;
   shows: SearchPaginated<{
     id: string;
     name: string;
     image: MediaQuality;
-    type: string;
+    type: "show";
     season_number: number;
     subtitle: string;
     url: string;
     position: number;
   }>;
-  episodes: SearchPaginated<unknown>;
+  // episodes: SearchPaginated<unknown>;
 };
 
 export type SongSearch = Search<Song | MiniEntity>;
@@ -137,3 +141,10 @@ export type PodcastSearch = Search<{
   primary_artists: ArtistMini[];
   url: string;
 }>;
+
+export type SearchReturnType =
+  | SongSearch
+  | AlbumSearch
+  | PlaylistSearch
+  | ArtistSearch
+  | PodcastSearch;
